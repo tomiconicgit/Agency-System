@@ -1,0 +1,49 @@
+{
+  "name": "Agency Terminal",
+  "short_name": "Agency",
+  "description": "A secure, terminal-based PWA for tactical simulations.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#007bff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Mission",
+      "short_name": "Mission",
+      "description": "Start a new tactical simulation.",
+      "url": "/?start=mission",
+      "icons": [
+        {
+          "src": "icons/mission-shortcut.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "View Inbox",
+      "short_name": "Inbox",
+      "description": "Check your secure messages.",
+      "url": "/?start=mail",
+      "icons": [
+        {
+          "src": "icons/mail-shortcut.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

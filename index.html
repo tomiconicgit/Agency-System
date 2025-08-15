@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Agency - Secure Terminal</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#121212" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="locked">
+  <main id="login-screen" class="screen">
+    <div class="login-wrap">
+      <div class="logo-container">
+        <h1 class="agency-title">AGENCY</h1>
+        <p class="tagline">SECURE ACCESS TERMINAL</p>
+      </div>
+      <div class="auth-card">
+        <p class="auth-message" id="authMessage">ACCESS CODE REQUIRED</p>
+        <div class="password-display" id="passwordDisplay"></div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <button id="authenticateBtn" class="auth-btn">TAP TO AUTHENTICATE</button>
+      </div>
+      <p class="login-footer">All data is encrypted and monitored. Unauthorized access is prohibited.</p>
+    </div>
+  </main>
+  
+  <main id="dashboard" class="screen hidden">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-name">AGENCY</span>
+        <span class="user-info">Agent ID: <span id="displayName">Agent</span> | Rank: <span id="rankDisplay">Recruit</span> (<span id="xpDisplay">0</span> XP)</span>
+      </div>
+      <div class="top-actions">
+        <button id="notifBtn" class="icon-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span id="notif-count" class="badge hidden">0</span>
+        </button>
+        <button id="settingsBtn" class="icon-btn" data-tool="settings">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1.51-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
+    </header>
+    
+    <section class="viewport">
+      <aside class="sidebar">
+        <nav class="tools">
+          <button class="tool-btn active" data-tool="map"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg><span class="tool-text">Map</span></button>
+          <button class="tool-btn" data-tool="tasks"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg><span class="tool-text">Tasks</span></button>
+          <button class="tool-btn" data-tool="mail"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span class="tool-text">Mail</span></button>
+          <button class="tool-btn" data-tool="contacts"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span class="tool-text">Contacts</span></button>
+          <button class="tool-btn" data-tool="database"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg><span class="tool-text">Database</span></button>
+          <button class="tool-btn" data-tool="armory"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-box"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 11.24 20.73 6.96"></polyline><line x1="12" y1="22.76" x2="12" y2="11.24"></line><line x1="12" y1="11.24" x2="12" y2="22.76"></line></svg><span class="tool-text">Armory</span></button>
+          <button class="tool-btn" data-tool="tools"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tool"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94-7.94l-3.77 3.77a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0z"></path><path d="M21 12a9 9 0 1 1-6.75-8.52"></path></svg><span class="tool-text">Tools</span></button>
+          <button class="tool-btn" data-tool="ai"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg><span class="tool-text">A.N.N.A.</span></button>
+        </nav>
+        <div class="status-panel">
+          <p class="status-text">SYSTEM STATUS: <span class="status-indicator online">ONLINE</span></p>
+          <div class="toggle-row">
+            <label>VPN</label>
+            <label class="switch"><input id="vpnToggle" type="checkbox"><span class="slider"></span></label>
+          </div>
+          <p class="status-text">Simulated IP: <span id="ipDisplay">0.0.0.0</span></p>
+        </div>
+      </aside>
+      
+      <main class="mainpane">
+        <div id="pane-map" class="pane active">
+          <div id="map" class="map"></div>
+          <div class="map-overlay">
+            <h3>Global Events</h3>
+            <p><strong>Region Status:</strong> <span id="map-status">Stable</span></p>
+            <ul id="globalEventsList"></ul>
+          </div>
+        </div>
+        
+        <div id="pane-tasks" class="pane hidden">
+          <h2>Mission Log</h2>
+          <div id="tasksList" class="list"></div>
+        </div>
+        
+        <div id="pane-mail" class="pane hidden">
+          <h2>Inbox</h2>
+          <div id="mailList" class="list"></div>
+        </div>
+        
+        <div id="pane-contacts" class="pane hidden">
+          <h2>Contacts</h2>
+          <div id="contactsList" class="list"></div>
+        </div>
+        
+        <div id="pane-database" class="pane hidden">
+          <h2>Database</h2>
+          <p>Your records and intelligence on key targets and factions.</p>
+          <div id="dbList" class="list"></div>
+        </div>
+        
+        <div id="pane-armory" class="pane hidden">
+          <h2>Armory & Assets</h2>
+          <div class="armory-grid">
+            <div class="resource-panel">
+              <p>Credits: <span id="creditsDisplay">0</span></p>
+              <p>Influence: <span id="influenceDisplay">0</span></p>
+            </div>
+            <h3>Available Assets</h3>
+            <div id="assetList" class="list"></div>
+          </div>
+        </div>
+        
+        <div id="pane-tools" class="pane hidden">
+          <h2>Toolbox</h2>
+          <div class="tools-grid">
+            <div class="tool-card" data-tool="recon">
+              <h3>Recon Scan</h3>
+              <p>Reveal extra details on a selected mission.</p>
+              <button class="use-tool">LAUNCH SCAN</button>
+              <div class="tool-meta small">Cooldown: <span id="cd-recon">0s</span></div>
+            </div>
+            <div class="tool-card" data-tool="decrypt">
+              <h3>Decrypt</h3>
+              <p>Decrypt simulated messages (timed progress).</p>
+              <button class="use-tool">START DECRYPT</button>
+              <div class="tool-meta small">Cooldown: <span id="cd-decrypt">0s</span></div>
+            </div>
+          </div>
+        </div>
+        
+        <div id="pane-ai" class="pane hidden">
+          <h2>A.N.N.A. Assistant</h2>
+          <div id="ai-chat" class="chat-container">
+            <div class="chat-message bot">Hello, Agent. I am A.N.N.A., your Augmented Network Navigation Assistant. I am online and ready to assist you.</div>
+          </div>
+          <input type="text" id="ai-input" placeholder="Ask A.N.N.A. a question..." />
+        </div>
+        
+        <div id="pane-settings" class="pane hidden">
+          <h2>Settings</h2>
+          <div class="settings-grid">
+            <label>Agent display name
+              <input id="aliasInput" type="text" maxlength="24" placeholder="Agent Name" />
+            </label>
+            <div class="toggle-row">
+              <label>Sounds</label>
+              <label class="switch"><input id="soundToggle" type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <label>Vibration (if supported)</label>
+              <label class="switch"><input id="vibToggle" type="checkbox"><span class="slider"></span></label>
+            </div>
+            <label>Reset Progress
+              <button id="resetProgress">Reset</button>
+            </label>
+            <p class="small">All data is stored locally in your browser.</p>
+          </div>
+        </div>
+        
+        <div id="pane-brief" class="pane hidden">
+          <button id="backBtn" class="back-btn">< Back</button>
+          <div id="briefContent"></div>
+        </div>
+      </main>
+    </section>
+    
+    <div id="overlay" class="overlay hidden">
+      <div id="overlayContent" class="overlay-content"></div>
+    </div>
+    
+    <div id="missionBanner" class="mission-banner hidden"></div>
+    
+    <aside id="notifications" class="notifications hidden"></aside>
+  </main>
+  
+  <audio id="click-sound" src="sounds/click.mp3" preload="auto"></audio>
+  <audio id="login-success-sound" src="sounds/login-success.mp3" preload="auto"></audio>
+  <audio id="login-fail-sound" src="sounds/login-fail.mp3" preload="auto"></audio>
+  <audio id="notification-sound" src="sounds/notification.mp3" preload="auto"></audio>
+  <audio id="alert-critical-sound" src="sounds/alert-critical.mp3" preload="auto"></audio>
+  <audio id="typing-sound" src="sounds/typing.mp3" preload="auto"></audio>
+  <audio id="deploy-success" src="sounds/deploy-success.mp3" preload="auto"></audio>
+  <audio id="mission-complete" src="sounds/mission-complete.mp3" preload="auto"></audio>
+  
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW failed', e));
+    }
+  </script>
+</body>
+</html>
